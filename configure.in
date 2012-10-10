@@ -50,7 +50,7 @@ AM_CONDITIONAL(BUILD_DOXYGEN, test "x$HAVE_DOXYGEN" = "xyes")
 dnl
 dnl Check for Python, and build python module if present
 dnl
-use_python=true
+use_python=false
 PYTHON=python
 AC_ARG_WITH(python,
 	AS_HELP_STRING([--without-python],
