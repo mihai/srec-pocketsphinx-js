@@ -9,7 +9,7 @@ SPHINXBASE_DIR=../sphinxbase-0.7
 # NOTE! You must also compile sphinxbase with emcc before running this script
 
 echo "-- Compiling with emcc ... (takes a while)"
-emcc -O2 --closure 0 \
+emcc -O0 --closure 0 -s SAFE_HEAP=1 \
 	src/libpocketsphinx/.libs/*.o src/libpocketsphinx/.libs/libpocketsphinx.a \
 	$SPHINXBASE_DIR/src/libsphinxbase/.libs/libsphinxbase.a \
 	src/programs/continuous.o \
