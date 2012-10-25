@@ -14,24 +14,14 @@ POCKETSPHINX_ROOT=.
 cd $POCKETSPHINX_ROOT
 
 echo "-- Compiling with emcc ... (takes a while)"
-emcc -O0 --closure 0 -s SAFE_HEAP=1 \
+emcc -O2 --closure 0 \
 	src/libpocketsphinx/.libs/*.o src/libpocketsphinx/.libs/libpocketsphinx.a \
 	$SPHINXBASE_DIR/src/libsphinxbase/.libs/libsphinxbase.a \
 	src/programs/continuous.o \
-	--embed-file test/data/numbers.raw \
-	--embed-file model/hmm/en/tidigits/mdef \
-	--embed-file model/hmm/en/tidigits/transition_matrices \
-	--embed-file model/hmm/en/tidigits/variances \
-	--embed-file model/hmm/en/tidigits/sendump \
-	--embed-file model/hmm/en/tidigits/feat.params \
-	--embed-file model/hmm/en/tidigits/means \
-	--embed-file model/lm/en/tidigits.DMP \
-	--embed-file model/lm/en/tidigits.dic \
-	--embed-file model/lm/en/tidigits.fsg \
-	-o $JS_DIR/pocketsphinx_continuous.js
+	-o $JS_DIR/pocketsphinx_continuous_nofiles.js
 
 echo "-- Running pocketsphinx_continuous.js on numbers.raw ..."
-node $JS_DIR/pocketsphinx_continuous.js -infile test/data/numbers.raw \
+node $JS_DIR/pocketsphinx_continuous_nofiles.js -infile test/data/numbers.raw \
 	-hmm model/hmm/en/tidigits \
 	-dict model/lm/en/tidigits.dic \
 	-lm model/lm/en/tidigits.DMP
