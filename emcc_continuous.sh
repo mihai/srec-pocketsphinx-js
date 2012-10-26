@@ -17,6 +17,8 @@ echo "-- Compiling with emcc ... (takes a while)"
 emcc -O0 --closure 0 -s SAFE_HEAP=1 \
 	src/libpocketsphinx/.libs/*.o src/libpocketsphinx/.libs/libpocketsphinx.a \
 	$SPHINXBASE_DIR/src/libsphinxbase/.libs/libsphinxbase.a \
+	$SPHINXBASE_DIR/src/libsphinxad/.libs/libsphinxad.a \
+	$SPHINXBASE_DIR/src/libsphinxad/*.o \
 	src/programs/continuous.o \
 	--embed-file test/data/numbers.raw \
 	--embed-file model/hmm/en/tidigits/mdef \
