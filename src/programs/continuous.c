@@ -136,12 +136,15 @@ recognize_from_file() {
     int32 k, ts, start;
 
     char waveheader[44];
+    // DEBUG
+    E_INFO("[DEBUG] Recognizing speech from file: %s\n", cmd_ln_str_r(config, "-infile"));
     rawfd = fopen(cmd_ln_str_r(config, "-infile"), "rb");
     fread(waveheader, 1, 44, rawfd);
 
     file_ad.sps = (int32)cmd_ln_float32_r(config, "-samprate");
     file_ad.bps = sizeof(int16);
-
+    // DEBUG
+    E_INFO("[DEBUG] Waveheader read, initializing voice detection ...\n");
     if ((cont = cont_ad_init(&file_ad, ad_file_read)) == NULL) {
         E_FATAL("Failed to initialize voice activity detection");
     }
@@ -159,9 +162,10 @@ recognize_from_file() {
 
         if (ps_start_utt(ps, NULL) < 0)
             E_FATAL("ps_start_utt() failed\n");
-
+        // DEBUG
+        //E_INFO("[DEBUG] 1. Processing raw audio ...\n");
         ps_process_raw(ps, adbuf, k, FALSE, FALSE);
-        
+        //E_INFO("[DEBUG] 1. Processed raw audio ...\n");
         ts = cont->read_ts;
         start = (ts - k) / file_ad.sps * 100;
         
@@ -182,7 +186,8 @@ recognize_from_file() {
                 ts = cont->read_ts;
             }
 
-
+            // DEBUG
+            //E_INFO("[DEBUG] 2. Processing raw audio ...\n");
             ps_process_raw(ps, adbuf, k, FALSE, FALSE);
         }
 
@@ -363,13 +368,16 @@ main(int argc, char *argv[])
     ps = ps_init(config);
     if (ps == NULL)
         return 1;
-
+    
     E_INFO("%s COMPILED ON: %s, AT: %s\n\n", argv[0], __DATE__, __TIME__);
 
     if (cmd_ln_str_r(config, "-infile") != NULL) {
+        // DEBUG
+        E_INFO("[DEBUG] Recognize from file: %s\n", cmd_ln_str_r(config, "-infile"));
 	recognize_from_file();
     } else {
-
+// DEBUG
+        E_INFO("[DEBUG] NOT Recognized from file!");
         /* Make sure we exit cleanly (needed for profiling among other things) */
 	/* Signals seem to be broken in arm-wince-pe. */
 #if !defined(GNUWINCE) && !defined(_WIN32_WCE) && !defined(__SYMBIAN32__)
