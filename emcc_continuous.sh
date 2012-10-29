@@ -10,11 +10,12 @@ SPHINXBASE_DIR=../sphinxbase-0.7
 
 JS_DIR=js
 POCKETSPHINX_ROOT=.
-
+ARGS="-O2"
+ARGS_SAFE="-O0 --closure 0 -s SAFE_HEAP=1" 
 cd $POCKETSPHINX_ROOT
 
 echo "-- Compiling with emcc ... (takes a while)"
-emcc -O0 --closure 0 -s SAFE_HEAP=1 \
+emcc $ARGS \
 	src/libpocketsphinx/.libs/*.o src/libpocketsphinx/.libs/libpocketsphinx.a \
 	$SPHINXBASE_DIR/src/libsphinxbase/.libs/libsphinxbase.a \
 	$SPHINXBASE_DIR/src/libsphinxad/.libs/libsphinxad.a \
