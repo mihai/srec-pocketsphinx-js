@@ -55,6 +55,8 @@
 #include "ngram_search_fwdtree.h"
 #include "ngram_search_fwdflat.h"
 
+//#define DEBUG 1
+
 static const arg_t ps_args_def[] = {
     POCKETSPHINX_OPTIONS,
     CMDLN_EMPTY_OPTION
@@ -759,6 +761,9 @@ ps_process_raw(ps_decoder_t *ps,
         int nfr;
 
         /* Process some data into features. */
+#ifdef DEBUG
+        E_INFO("[DEBUG] Process data into features ...\n");
+#endif
         if ((nfr = acmod_process_raw(ps->acmod, &data,
                                      &n_samples, full_utt)) < 0)
             return nfr;
@@ -766,6 +771,9 @@ ps_process_raw(ps_decoder_t *ps,
         /* Score and search as much data as possible */
         if (no_search)
             continue;
+#ifdef DEBUG
+        E_INFO("[DEBUG] Score and search data ...\n");
+#endif
         if ((nfr = ps_search_forward(ps)) < 0)
             return nfr;
         n_searchfr += nfr;
