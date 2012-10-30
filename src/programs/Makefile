@@ -38,7 +38,7 @@ build_triplet = x86_64-apple-darwin12.2.0
 host_triplet = x86_64-apple-darwin12.2.0
 bin_PROGRAMS = pocketsphinx_batch$(EXEEXT) \
 	pocketsphinx_continuous$(EXEEXT) \
-	pocketsphinx_mdef_convert$(EXEEXT)
+	pocketsphinx_mdef_convert$(EXEEXT) srec_file$(EXEEXT)
 subdir = src/programs
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -65,6 +65,10 @@ pocketsphinx_mdef_convert_OBJECTS =  \
 	$(am_pocketsphinx_mdef_convert_OBJECTS)
 pocketsphinx_mdef_convert_DEPENDENCIES =  \
 	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la
+am_srec_file_OBJECTS = srec_file.$(OBJEXT)
+srec_file_OBJECTS = $(am_srec_file_OBJECTS)
+srec_file_DEPENDENCIES =  \
+	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -78,10 +82,10 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(pocketsphinx_batch_SOURCES) \
 	$(pocketsphinx_continuous_SOURCES) \
-	$(pocketsphinx_mdef_convert_SOURCES)
+	$(pocketsphinx_mdef_convert_SOURCES) $(srec_file_SOURCES)
 DIST_SOURCES = $(pocketsphinx_batch_SOURCES) \
 	$(pocketsphinx_continuous_SOURCES) \
-	$(pocketsphinx_mdef_convert_SOURCES)
+	$(pocketsphinx_mdef_convert_SOURCES) $(srec_file_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -229,6 +233,10 @@ pocketsphinx_continuous_SOURCES = continuous.c
 pocketsphinx_continuous_LDADD = \
 	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la -lsphinxad
 
+srec_file_SOURCES = srec_file.c
+srec_file_LDADD = \
+	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la -lsphinxad
+
 INCLUDES = -I$(top_srcdir)/include \
 	-I$(top_srcdir)/src/libpocketsphinx \
 	-I$(top_builddir)/include
@@ -303,6 +311,9 @@ pocketsphinx_continuous$(EXEEXT): $(pocketsphinx_continuous_OBJECTS) $(pocketsph
 pocketsphinx_mdef_convert$(EXEEXT): $(pocketsphinx_mdef_convert_OBJECTS) $(pocketsphinx_mdef_convert_DEPENDENCIES) 
 	@rm -f pocketsphinx_mdef_convert$(EXEEXT)
 	$(LINK) $(pocketsphinx_mdef_convert_LDFLAGS) $(pocketsphinx_mdef_convert_OBJECTS) $(pocketsphinx_mdef_convert_LDADD) $(LIBS)
+srec_file$(EXEEXT): $(srec_file_OBJECTS) $(srec_file_DEPENDENCIES) 
+	@rm -f srec_file$(EXEEXT)
+	$(LINK) $(srec_file_LDFLAGS) $(srec_file_OBJECTS) $(srec_file_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -313,6 +324,7 @@ distclean-compile:
 include ./$(DEPDIR)/batch.Po
 include ./$(DEPDIR)/continuous.Po
 include ./$(DEPDIR)/mdef_convert.Po
+include ./$(DEPDIR)/srec_file.Po
 
 .c.o:
 	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
