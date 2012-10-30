@@ -197,8 +197,12 @@ recognize_from_file() {
 	    print_word_times(start);
 	} else {
 	    hyp = ps_get_hyp(ps, NULL, &uttid);
-            printf("%s: %s\n", uttid, hyp);
-        }
+        printf("%s: %s\n", uttid, hyp);
+
+        double out_nspeech, out_ncpu, out_nwall;
+        ps_get_utt_time(ps, &out_nspeech, &out_ncpu, &out_nwall);
+        E_INFO_NOFN("[TIMER] Speech: %.2f CPU: %.3f Recognize: %.3f x RT\n\n", out_nspeech, out_ncpu, out_nwall/out_nspeech);
+    }
         fflush(stdout);	
     }
 
