@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script used to compile and run the JavaScript version of the 
-# pocketsphinx_continuous program
+# srec_file  program
 # -------------------------------
 # Mihai Cirlanaru
 
@@ -18,7 +18,7 @@ ARGS="-O2"
 ARGS_SAFE="-O0 --closure 0 -s SAFE_HEAP=1" 
 cd $POCKETSPHINX_ROOT
 
-echo "-- Compiling with emcc ... (takes a while)"
+echo "-- Compiling $JS_PROGR with emcc ... (takes a while)"
 emcc $ARGS \
 	src/libpocketsphinx/.libs/*.o src/libpocketsphinx/.libs/libpocketsphinx.a \
 	$SPHINXBASE_DIR/src/libsphinxbase/.libs/libsphinxbase.a \
