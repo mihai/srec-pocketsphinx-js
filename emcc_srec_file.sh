@@ -12,6 +12,7 @@ JS_DIR=js
 JS_PROGR=srec_file.js
 
 RAW_FILE=test/data/numbers.raw
+NBEST=3
 
 POCKETSPHINX_ROOT=.
 ARGS="-O2"
@@ -41,5 +42,6 @@ echo "-- Running $JS_PROGR on $RAW_FILE ..."
 node $JS_DIR/$JS_PROGR -infile $RAW_FILE \
 	-hmm model/hmm/en/tidigits \
 	-dict model/lm/en/tidigits.dic \
-	-lm model/lm/en/tidigits.DMP
+	-lm model/lm/en/tidigits.DMP \
+	-nbest $NBEST
 
