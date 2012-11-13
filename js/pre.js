@@ -30,10 +30,15 @@ if (typeof Module['fsg'] != "undefined") {
 var args = "-infile recording.raw -mdef mdef -tmat tmat -mean means -sendump sendump -featparams feat.params -var variances -dict model.dic " + LMarg + " -samprate " + Module["samprate"] + " -nbest " + Module["nbest"];
 Module['arguments'] = args.split(" ");
 
+// Labels for parsing the speech recognition decoding result
+// TODO: find a more generic way to set them up
+var recognizedLabel = "RECOGNIZED";
+var nbestLabel = "NBEST";
+
 Module['return'] = '';
-srecRegExp=/\[RECOGNIZED\]: (.*)/g;
-srecNRegExp=/\[NBEST\]: (.*)/g;
-timerRegExp=/.*\[TIMER \w\] (.*)/g;
+srecRegExp = new RegExp("\\["+recognizedLabel+"\\]: (.*)", "g");
+srecNRegExp = new RegExp("\\["+nbestLabel+"\\]: (.*)");
+timerRegExp = /.*\[TIMER \w\] (.*)/g;
 
 Module['print'] = function(text) {
   Module['return'] += text + '\n';
