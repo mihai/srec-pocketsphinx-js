@@ -27,11 +27,12 @@ if (typeof Module['fsg'] != "undefined") {
   LMarg = "-fsg model.fsg";
   console.log("USING FINITE STATE GRAMMAR (FSG)");
 }
-var args = "-infile recording.raw -mdef mdef -tmat tmat -mean means -sendump sendump -featparams feat.params -var variances -dict model.dic " + LMarg + " -samprate " + Module["samprate"];
+var args = "-infile recording.raw -mdef mdef -tmat tmat -mean means -sendump sendump -featparams feat.params -var variances -dict model.dic " + LMarg + " -samprate " + Module["samprate"] + " -nbest " + Module["nbest"];
 Module['arguments'] = args.split(" ");
 
 Module['return'] = '';
 srecRegExp=/\[RECOGNIZED\]: (.*)/g;
+srecNRegExp=/\[NBEST\]: (.*)/g;
 timerRegExp=/.*\[TIMER \w\] (.*)/g;
 
 Module['print'] = function(text) {
@@ -40,7 +41,10 @@ Module['print'] = function(text) {
 
   if (text.match(srecRegExp)) {
     document.getElementById("srec_hyp").innerHTML = srecRegExp.exec(text)[1];
-  }
+  } else
+  if (text.match(srecNRegExp)) {
+    document.getElementById("srec_hyp_nbest").innerHTML += srecNRegExp.exec(text)[1] + "<br/>";
+  } else
   if (text.match(timerRegExp)) {
     document.getElementById("srec_timer").innerHTML = "TIME: "+ timerRegExp.exec(text)[1];
   }

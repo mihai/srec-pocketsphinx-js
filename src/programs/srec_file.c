@@ -31,6 +31,10 @@ static const arg_t cont_args_def[] = {
       ARG_BOOLEAN, 
       "no", 
       "Print word times in file transcription." },
+      { "-nbest",
+      ARG_INT32,
+      "0",
+      "Number of N-best hypotheses to write to -nbestdir (0 for no N-best)" },
     CMDLN_EMPTY_OPTION
 };
 
@@ -39,19 +43,21 @@ static cmd_ln_t *config;
 static FILE* rawfd;
 
 static void
-print_word_times(int32 start)
+print_nbest(ps_decoder_t *ps, char const *uttid)
 {
-	ps_seg_t *iter = ps_seg_iter(ps, NULL);
-	while (iter != NULL) {
-		int32 sf, ef, pprob;
-		float conf;
-		
-		ps_seg_frames (iter, &sf, &ef);
-		pprob = ps_seg_prob (iter, NULL, NULL, NULL);
-		conf = logmath_exp(ps_get_logmath(ps), pprob);
-		printf ("%s %f %f %f\n", ps_seg_word (iter), (sf + start) / 100.0, (ef + start) / 100.0, conf);
-		iter = ps_seg_next (iter);
-	}
+    ps_nbest_t *nbest;
+    int32 i, n, score;
+    const char* hyp;
+
+    n = cmd_ln_int32_r(config, "-nbest");
+
+    nbest = ps_nbest(ps, 0, -1, NULL, NULL);
+    for (i = 0; i < n; i++) {
+        ps_nbest_next(nbest);
+        hyp = ps_nbest_hyp(nbest, &score);
+        printf("%s: %s (score: %d)\n", uttid, hyp, score);
+    }
+    ps_nbest_free(nbest);
 }
 
 /*
@@ -59,7 +65,6 @@ print_word_times(int32 start)
  */
 static void
 recognize_from_file() {
-    ad_rec_t file_ad = {0};
     const char* hyp;
     const char* uttid;
 
@@ -80,6 +85,7 @@ recognize_from_file() {
 
             hyp = ps_get_hyp(ps, NULL, &uttid);
             printf("%s: %s\n", uttid, hyp);
+            print_nbest(ps, "[NBEST]");
             ps_get_utt_time(ps, &out_nspeech, &out_ncpu, &out_nwall);
             E_INFO_NOFN("[TIMER %d] Speech: %.2f CPU: %.3f Recognize: %.3f x RT\n\n", i, out_nspeech, out_ncpu, out_nwall/out_nspeech);
             fflush(stdout);
