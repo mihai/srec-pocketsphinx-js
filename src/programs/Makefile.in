@@ -38,7 +38,8 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = pocketsphinx_batch$(EXEEXT) \
 	pocketsphinx_continuous$(EXEEXT) \
-	pocketsphinx_mdef_convert$(EXEEXT) srec_file$(EXEEXT)
+	pocketsphinx_mdef_convert$(EXEEXT) srec_file$(EXEEXT) \
+	test_raw_ps$(EXEEXT)
 subdir = src/programs
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -69,6 +70,10 @@ am_srec_file_OBJECTS = srec_file.$(OBJEXT)
 srec_file_OBJECTS = $(am_srec_file_OBJECTS)
 srec_file_DEPENDENCIES =  \
 	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la
+am_test_raw_ps_OBJECTS = test_raw_ps.$(OBJEXT)
+test_raw_ps_OBJECTS = $(am_test_raw_ps_OBJECTS)
+test_raw_ps_DEPENDENCIES =  \
+	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -82,10 +87,12 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(pocketsphinx_batch_SOURCES) \
 	$(pocketsphinx_continuous_SOURCES) \
-	$(pocketsphinx_mdef_convert_SOURCES) $(srec_file_SOURCES)
+	$(pocketsphinx_mdef_convert_SOURCES) $(srec_file_SOURCES) \
+	$(test_raw_ps_SOURCES)
 DIST_SOURCES = $(pocketsphinx_batch_SOURCES) \
 	$(pocketsphinx_continuous_SOURCES) \
-	$(pocketsphinx_mdef_convert_SOURCES) $(srec_file_SOURCES)
+	$(pocketsphinx_mdef_convert_SOURCES) $(srec_file_SOURCES) \
+	$(test_raw_ps_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -237,6 +244,10 @@ srec_file_SOURCES = srec_file.c
 srec_file_LDADD = \
 	$(top_builddir)/src/libpocketsphinx/libpocketsphinx.la -lsphinxad
 
+test_raw_ps_SOURCES = test_raw_ps.c
+test_raw_ps_LDADD = \
+  $(top_builddir)/src/libpocketsphinx/libpocketsphinx.la -lsphinxad
+
 INCLUDES = -I$(top_srcdir)/include \
 	-I$(top_srcdir)/src/libpocketsphinx \
 	-I$(top_builddir)/include
@@ -314,6 +325,9 @@ pocketsphinx_mdef_convert$(EXEEXT): $(pocketsphinx_mdef_convert_OBJECTS) $(pocke
 srec_file$(EXEEXT): $(srec_file_OBJECTS) $(srec_file_DEPENDENCIES) 
 	@rm -f srec_file$(EXEEXT)
 	$(LINK) $(srec_file_LDFLAGS) $(srec_file_OBJECTS) $(srec_file_LDADD) $(LIBS)
+test_raw_ps$(EXEEXT): $(test_raw_ps_OBJECTS) $(test_raw_ps_DEPENDENCIES) 
+	@rm -f test_raw_ps$(EXEEXT)
+	$(LINK) $(test_raw_ps_LDFLAGS) $(test_raw_ps_OBJECTS) $(test_raw_ps_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -325,6 +339,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/continuous.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdef_convert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srec_file.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_raw_ps.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
